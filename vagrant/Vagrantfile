@@ -1,0 +1,80 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+######################################
+#
+# Use this file with vagrant 1.1+
+# This file reflects the changes to the system through the new providers
+#
+#
+# The contents of this file are copied from Vagrant_2
+#
+######################################
+
+require 'pathname'
+
+Vagrant.configure("2") do |config|
+
+    # Every Vagrant virtual environment requires a box to build off of.
+    config.vm.box = "CentOs63"
+
+    # The url from where the 'config.vm.box' box will be fetched if it
+    # doesn't already exist on the user's system.
+    config.vm.box_url = "http://developer.nrel.gov/downloads/vagrant-boxes/CentOS-6.4-x86_64-v20130309.box"
+
+    config.vm.provider :virtualbox do |v|
+
+        # Shared Folders, Use some Pathname.realpath magic because VBox cant understand relative paths
+        v.customize [
+            "sharedfolder", "add", :id,
+            "--name", "ZendFramework2Project",
+            "--hostpath", (Pathname.new Dir.getwd + "/../").realpath.to_s
+        ]
+
+        v.customize [
+            "sharedfolder", "add", :id,
+            "--name", "PuppetModules",
+            "--hostpath", (Pathname.new Dir.getwd + "/modules/").realpath.to_s
+        ]
+
+        # Boot with a GUI so you can see the screen. (Default is headless)
+        v.gui = false
+
+        # Global machine specific settings
+        v.customize [
+            "modifyvm", :id,
+            "--memory", 2048,
+            "--cpus", 2,
+            "--hwvirtex", "on",
+            "--hwvirtexexcl", "on",
+            "--vtxvpid", "on",
+            "--ioapic", "on",
+            "--accelerate3d", "off",
+            "--natdnsproxy1", "off",
+            "--largepages", "on",
+        ]
+
+    end
+
+    # Machine Hostname
+    config.vm.hostname = "neufocus-development.dev"
+
+    # Machine IP address
+    config.vm.network :private_network, ip: "192.168.1.12"
+
+    # File sharing Mounting
+    config.vm.provision :shell, :path => "shell-provision/mount-ZendFramework2Project.sh"
+    config.vm.provision :shell, :path => "shell-provision/mount-PuppetModules.sh"
+
+    # Get the puppet provisioning setup properly
+    config.vm.provision :shell, :path => "shell-provision/provision.sh"
+
+    config.vm.provision :puppet do |puppet|
+        puppet.manifests_path = "manifests"
+        puppet.manifest_file  = "base.pp"
+        puppet.pp_path = "/tmp/vagrant-puppet"
+        puppet.options << "--pluginsync"
+        puppet.options << "--fileserverconfig=/vagrant/fileserver.conf"
+        puppet.options << "--modulepath=/etc/puppet/modules:/usr/share/puppet/modules:/media/PuppetModules"
+    end
+end
