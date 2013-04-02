@@ -1,0 +1,18 @@
+
+<div class="row">
+    <h2>Constructor</h2>
+    <ul>
+        <?php foreach($result['constructor'] as $item): ?>
+            <li><?php echo $item->getNumber(); ?></li>
+        <?php endforeach; ?>
+    </ul>
+</div>
+
+<div class="row">
+    <h2>Service Manager</h2>
+    <ul>
+        <?php foreach($result['service_manager'] as $item): ?>
+            <li><?php echo $item->getNumber(); ?></li>
+        <?php endforeach; ?>
+    </ul>
+</div>
