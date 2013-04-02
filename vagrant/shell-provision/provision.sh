@@ -2,7 +2,7 @@
 
 PUPPET_MODULE_PATH="/media/PuppetModules"
 
-KEEP_UPDATED=true
+KEEP_UPDATED=false
 
 # Make sure heira.yaml is in the puppet dir
 
