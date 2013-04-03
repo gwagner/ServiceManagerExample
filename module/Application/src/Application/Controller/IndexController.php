@@ -17,6 +17,8 @@ class IndexController extends AbstractActionController
 {
     public function indexAction()
     {
+        $this->verifyExampleDB();
+
         $model = $this->getServiceLocator()->get('model');
         $result = $model->addRandomRecord();
 
@@ -72,6 +74,8 @@ class IndexController extends AbstractActionController
 
     public function resetAction()
     {
+        $this->verifyExampleDB();
+
         if(file_exists('/tmp/history')) # If we have a history file, remove it
             unlink('/tmp/history');
 
@@ -85,5 +89,25 @@ class IndexController extends AbstractActionController
 
         # Return the view
         return new ViewModel();
+    }
+
+    protected function verifyExampleDB()
+    {
+        $conn = $this->getServiceLocator()->get('mysql_connection');
+
+        $result = mysqli_query($conn->getConnector(), 'show databases');
+
+        $databases = array();
+        while($row = mysqli_fetch_assoc($result))
+            $databases[$row['Database']] = 1;
+
+        if(!isset($databases['example']))
+        {
+            mysqli_query($conn->getConnector(), 'create database if not exists `example`');
+
+            $conn->getConnector()->select_db('example');
+
+            mysqli_query($conn->getConnector(), 'CREATE TABLE `example` (`result` varchar(20) NOT NULL) ENGINE=MyISAM DEFAULT CHARSET=latin1');
+        }
     }
 }

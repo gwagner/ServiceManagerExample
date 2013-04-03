@@ -32,7 +32,7 @@ class MySQL implements ServiceLocatorAwareInterface, FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        $this->_connector = new \mysqli('localhost', 'root', 'root', 'example');
+        $this->_connector = new \mysqli('localhost', 'root', 'root');
 
         $this->_connectionId = mt_rand(0,200000);
 

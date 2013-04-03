@@ -29,6 +29,8 @@ class ExampleTable implements ServiceLocatorAwareInterface, FactoryInterface
 
     public function addRandomRecord()
     {
+        $this->_connector->getConnector()->select_db('example');
+
         $value = $this->generateRandomString();
 
         mysqli_query($this->_connector->getConnector(), 'INSERT INTO example (result) VALUES ("'.mysql_real_escape_string($value).'")');

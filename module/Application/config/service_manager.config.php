@@ -12,15 +12,18 @@ return [
         'translator'        => 'Zend\I18n\Translator\TranslatorServiceFactory',
 
         # MySQL Example Connector
-        # 'connection'        => 'Application\Connector\MySQL',
-        # 'model'             => 'Application\Model\MySQL\ExampleTable',
+        'connection'        => 'Application\Connector\MySQL',
+        'model'             => 'Application\Model\MySQL\ExampleTable',
 
         # Mongo Example Connector
-        'connection'       => 'Application\Connector\Mongo',
-        'model'            => 'Application\Model\Mongo\ExampleCollection',
+        # 'connection'       => 'Application\Connector\Mongo',
+        # 'model'            => 'Application\Model\Mongo\ExampleCollection',
 
         # Random Number Example
-        'random_number'     => 'Application\Service\RandomNumber'
+        'random_number'     => 'Application\Service\RandomNumber',
+
+        # Since mysql does not create tables on fly like mongo, this connection is used to verify table creation
+        'mysql_connection'  => 'Application\Connector\MySQL',
     ],
 
     'shared' => [
